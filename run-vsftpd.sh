@@ -21,7 +21,10 @@ fi
 mkdir -p "/home/vsftpd/${FTP_USER}"
 chown -R ftp:ftp /home/vsftpd/
 
-echo -e "${FTP_USER}\n${FTP_PASS}" > /etc/vsftpd/virtual_users.txt
+if ! grep -Fxq "${FTP_USER}" /etc/vsftpd/virtual_users.txt
+then
+    echo -e "${FTP_USER}\n${FTP_PASS}" >> /etc/vsftpd/virtual_users.txt
+fi
 /usr/bin/db_load -T -t hash -f /etc/vsftpd/virtual_users.txt /etc/vsftpd/virtual_users.db
 
 # Set passive mode parameters:
@@ -53,12 +56,12 @@ export LOG_FILE=`grep vsftpd_log_file /etc/vsftpd/vsftpd.conf|cut -d= -f2`
 # stdout server info:
 if [ ! $LOG_STDOUT ]; then
 cat << EOB
-	*************************************************
-	*                                               *
-	*    Docker image: fauria/vsftpd                *
-	*    https://github.com/fauria/docker-vsftpd    *
-	*                                               *
-	*************************************************
+	***************************************************
+	*                                                 *
+	*    Docker image: ricardollu/vsftpd              *
+	*    https://github.com/ricardollu/docker-vsftpd  *
+	*                                                 *
+	***************************************************
 
 	SERVER SETTINGS
 	---------------
